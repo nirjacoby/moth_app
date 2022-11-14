@@ -26,6 +26,59 @@ var stimWithId = function(id)
 	return matches[0];
 };
 
+var identifySamplingHoles = function(duration, binLength = 90, binPadding = 5)
+{
+    var numBins = Math.ceil(duration / binLength);
+    var holes = _.range(1,binPadding);
+    for (var i = 1; i < numBins ; i ++)
+    {
+      thisOffset = _.range(i * binLength-binPadding,i*binLength + binPadding);
+      var holes = holes.concat(thisOffset);
+    }
+
+    var remainingTime = duration - ((i-1) * binLength);
+	  if (remainingTime > binPadding * 4)
+    {
+      thisOffset = _.range(duration-binPadding * 2,duration);
+      var holes = holes.concat(thisOffset);
+    }
+
+    return holes;
+}
+
+console.log(identifySamplingHoles(duration,binLength))
+
+// sample rate is percent of time stops as proportion
+var createTimes = function(duration, minDiff, binLength = 90, numTrys= 1000) 
+{
+    var numStops = Math.ceil(duration / binLength);
+    var vidRange = _.range(1,duration-1);
+
+    var holes = identifySamplingHoles(duration,binLength);
+    var numExtraStops = Math.ceil(duration/360);
+
+    for (var t = 0; t < numTrys; t++) {
+        var starts = _.sample(vidRange,numStops);
+        var extras = _.sample(holes,numExtraStops);
+        var starts = starts.concat(extras).sort(function(a,b){return a-b});
+  
+    // sample from all possible times and sort in ascending order
+        var zipped = _.zip(starts.slice(1), starts.slice(0,starts.length-1))
+        var check = _.map(zipped, function(pair) {return (pair[0]- pair[1]) >= minDiff})
+        var allTrue= check.every(function(elem){return elem===true})
+        if (allTrue){
+          break;
+        }
+    } 
+
+    if (allTrue) {
+        starts.unshift(0);
+        return starts;
+    } else {
+    console.log('could not find solution');
+    }
+}
+
 // Create start times given a video's duration, a base sample interval in seconds,
 // the proportion of the sample interval by which to vary each stop point,
 // and the minimum offset between the beginning of the video and the first stop.
@@ -1099,7 +1152,7 @@ var test = function(subjects, duration, interval)
 	var stops = [];
 	for (var i = 0; i < subjects; i ++)
 	{
-		var times = createTimesForDurationAndSampleInterval(duration, interval),
+		var times = createTimes(duration, minDiff = 10, binLength = 90, numTrys= 1000),
 			roundedTimes = [];
 		for (var j = 0; j < times.length; j ++)
 		{
