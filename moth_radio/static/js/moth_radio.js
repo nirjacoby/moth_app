@@ -46,7 +46,7 @@ var identifySamplingHoles = function(duration, binLength = 90, binPadding = 5)
     return holes;
 }
 
-console.log(identifySamplingHoles(duration,binLength))
+//console.log(identifySamplingHoles(duration,binLength))
 
 // sample rate is percent of time stops as proportion
 var createTimes = function(duration, minDiff, binLength = 90, numTrys= 1000) 
