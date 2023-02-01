@@ -49,7 +49,7 @@ var identifySamplingHoles = function(duration, binLength = 90, binPadding = 5)
 //console.log(identifySamplingHoles(duration,binLength))
 
 // sample rate is percent of time stops as proportion
-var createTimes = function(duration, minDiff, binLength = 90, numTrys= 1000) 
+var createTimesOversampling = function(duration, minDiff, binLength = 90, numTrys= 1000) 
 {
     var numStops = Math.ceil(duration / binLength);
     var vidRange = _.range(1,duration-1);
@@ -279,7 +279,7 @@ var buildSequence = function()
 	for (var i = 0; i < selectedStim.length; i ++)
 	{
 		var stim = selectedStim[i],
-			starts = createTimesForDurationAndBinLength(stim.duration, sampleInterval);
+			starts = createTimesOversampling(stim.duration, minDiff = 12, binLength = 90, numTrys= 1000);
 			stimObj = 
 			{
 				"stimulus": stim.id,
