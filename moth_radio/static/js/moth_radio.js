@@ -41,14 +41,12 @@ var identifySamplingHoles = function(duration, binLength = 90, binPadding = 5)
     {
       thisOffset = _.range(duration-binPadding * 2,duration);
     } else {
-      thisOffset = _.range((i-1) * binLength,duration);
+      thisOffset = _.range(holes[holes.length-1]+1,duration);
     }
     var holes = holes.concat(thisOffset);
 
     return holes;
 }
-
-//console.log(identifySamplingHoles(duration,binLength))
 
 // sample rate is percent of time stops as proportion
 var createTimesOversampling = function(duration, minDiff, binLength = 90, numTrys= 1000) 
