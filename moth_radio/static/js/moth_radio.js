@@ -37,11 +37,13 @@ var identifySamplingHoles = function(duration, binLength = 90, binPadding = 5)
     }
 
     var remainingTime = duration - ((i-1) * binLength);
-	  if (remainingTime > binPadding * 4)
+	if (remainingTime > binPadding * 4)
     {
       thisOffset = _.range(duration-binPadding * 2,duration);
-      var holes = holes.concat(thisOffset);
+    } else {
+      thisOffset = _.range((i-1) * binLength,duration);
     }
+    var holes = holes.concat(thisOffset);
 
     return holes;
 }
